@@ -1,5 +1,7 @@
 package ui;
 
+import io.ContainerBRRESExtractor;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -74,6 +76,46 @@ public class ContainerBRRESExtractorUI extends JFrame implements ActionListener 
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == browseInputFile) {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            int response = fileChooser.showOpenDialog(null);
+            if (response == JFileChooser.APPROVE_OPTION) {
+                inputFilePath = fileChooser.getSelectedFile().getAbsolutePath();
+                inputFileField.setText(inputFilePath);
+            } else {
+                return;
+            }
+        }
+        if (e.getSource() == browseOutputFolder) {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            int response = fileChooser.showOpenDialog(null);
+            if (response == JFileChooser.APPROVE_OPTION) {
+                outputFolderPath = fileChooser.getSelectedFile().getAbsolutePath();
+                outputFolderField.setText(outputFolderPath);
+            } else {
+                return;
+            }
+        }
+        if (e.getSource() == extract) {
+            if (inputFilePath.isEmpty() || outputFolderPath.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "You have not provided a input file path or output folder path! Please provide that information.");
+                return;
+            }
 
+            ContainerBRRESExtractor containerBRRESExtractor = new ContainerBRRESExtractor();
+            containerBRRESExtractor.extractContainerBRRES(inputFilePath, outputFolderPath);
+            JOptionPane.showMessageDialog(this, "Done Extracting!");
+
+           resetPaths();
+        }
+    }
+
+    private void resetPaths() {
+        inputFileField.setText("");
+        outputFolderField.setText("");
+        inputFilePath = "";
+        outputFolderPath = "";
     }
 }
