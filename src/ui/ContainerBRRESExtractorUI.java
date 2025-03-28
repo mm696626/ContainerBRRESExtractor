@@ -15,8 +15,10 @@ public class ContainerBRRESExtractorUI extends JFrame implements ActionListener 
 
     private JButton browseInputFile, browseOutputFolder, extract;
 
-    private JLabel inputFileLabel, outputFolderLabel;
+    private JLabel inputFileLabel, outputFolderLabel, organizeFilesLabel;
     private JTextField inputFileField, outputFolderField;
+
+    private JCheckBox organizeFiles;
 
     GridBagConstraints gridBagConstraints = null;
 
@@ -26,6 +28,7 @@ public class ContainerBRRESExtractorUI extends JFrame implements ActionListener 
 
         inputFileLabel = new JLabel("Input File");
         outputFolderLabel = new JLabel("Output Folder");
+        organizeFilesLabel = new JLabel("Organize Output Files");
         inputFileField = new JTextField(10);
         inputFileField.setEditable(false);
         outputFolderField = new JTextField(10);
@@ -39,6 +42,9 @@ public class ContainerBRRESExtractorUI extends JFrame implements ActionListener 
 
         extract = new JButton("Extract");
         extract.addActionListener(this);
+
+        organizeFiles = new JCheckBox();
+        organizeFiles.setSelected(false);
 
         setLayout(new GridBagLayout());
         gridBagConstraints = new GridBagConstraints();
@@ -68,6 +74,15 @@ public class ContainerBRRESExtractorUI extends JFrame implements ActionListener 
         gridBagConstraints.gridx=2;
         gridBagConstraints.gridy=1;
         add(browseOutputFolder, gridBagConstraints);
+
+        //other
+        gridBagConstraints.gridx=0;
+        gridBagConstraints.gridy=2;
+        add(organizeFilesLabel, gridBagConstraints);
+
+        gridBagConstraints.gridx=1;
+        gridBagConstraints.gridy=2;
+        add(organizeFiles, gridBagConstraints);
 
         gridBagConstraints.gridx=2;
         gridBagConstraints.gridy=2;
@@ -105,7 +120,7 @@ public class ContainerBRRESExtractorUI extends JFrame implements ActionListener 
             }
 
             ContainerBRRESExtractor containerBRRESExtractor = new ContainerBRRESExtractor();
-            containerBRRESExtractor.extractContainerBRRES(inputFilePath, outputFolderPath);
+            containerBRRESExtractor.extractContainerBRRES(inputFilePath, outputFolderPath, organizeFiles.isSelected());
             JOptionPane.showMessageDialog(this, "Done Extracting!");
 
            resetPaths();

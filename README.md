@@ -1,7 +1,7 @@
 # ContainerBRRESExtractor
 
 ### Container BRRES Extractor
-* A tool to extract container format BRRESS files since they don't extract directly in BrawlCrate
+* A tool to extract container format BRRES files since they don't extract directly in BrawlCrate
     * Learn more about the format here: https://wiki.vg-resource.com/BRRES
 
 ### Setup to get this tool working
