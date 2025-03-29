@@ -17,3 +17,6 @@
 * Sin and Punishment: Star Successor
 * Kamen Rider Climax Heroes W
 * Pac-Man Party
+
+### References I Used for the BRRES Format
+* https://wiki.tockdom.com/wiki/BRRES_(File_Format)

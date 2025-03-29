@@ -72,13 +72,19 @@ public class ContainerBRRESExtractor {
             int end = offsets.get(i + 1);
             byte[] splitContent = Arrays.copyOfRange(content, start, end);
 
-            File outputFile = new File(outputDir, "output_" + i + ".brres");
+            // Get the file length from the header and calculate the actual chunk length
+            int chunkFileLength = getFileLengthFromHeader(splitContent);
+            if (chunkFileLength > 0 && chunkFileLength <= splitContent.length) {
+                splitContent = Arrays.copyOfRange(splitContent, 0, chunkFileLength);
+            }
 
+            // Save the chunk to a file
+            File outputFile = new File(outputDir, "output_" + i + ".brres");
             try (FileOutputStream outputStream = new FileOutputStream(outputFile)) {
                 outputStream.write(splitContent);
             }
 
-            //if checkbox on UI is checked, then organize the files (this is disabled by default due to performance)
+            // If checkbox on UI is checked, then organize the files (this is disabled by default due to performance)
             if (organizeFiles) {
                 List<String> matchedFolders = new ArrayList<>();
                 for (Map.Entry<String, byte[]> entry : patterns.entrySet()) {
@@ -107,6 +113,31 @@ public class ContainerBRRESExtractor {
                 }
             }
         }
+    }
+
+    private static short readShort(byte[] content, int offset) {
+        return (short) ((content[offset] << 8) | (content[offset + 1] & 0xFF));
+    }
+
+    private static int readInt(byte[] content, int offset) {
+        return ((content[offset] & 0xFF) << 24) |
+                ((content[offset + 1] & 0xFF) << 16) |
+                ((content[offset + 2] & 0xFF) << 8) |
+                (content[offset + 3] & 0xFF);
+    }
+
+    // Get the file length from the BRES header
+    private static int getFileLengthFromHeader(byte[] content) {
+        // Read the Byte Order Mark (BOM) to determine byte order
+        short bom = readShort(content, 4);
+
+        //If BOM isn't 0xFEFF, then it isn't big endian. Just use the chunk size as a fallback
+        if (bom != (short) 0xFEFF) {
+            return content.length;
+        }
+
+        // File length is at offset 0x08
+        return readInt(content, 8);
     }
 
     private static boolean containsPattern(byte[] content, byte[] pattern) {
